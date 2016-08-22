@@ -1,0 +1,14 @@
+train = ["set00","set01","set02","set03","set04","set05"]
+test = ["set06","set07","set08","set09","set10"]
+train_Nreasonable_frames = get_frames(old_annotation, new_reasonable_filter,train)
+test_Nreasonable_frames = get_frames(old_annotation, new_reasonable_filter,test)
+
+print("There are {} Nreasonable train frames".format(len(train_Nreasonable_frames)))
+print("There are {} Nreasonable test frames".format(len(test_Nreasonable_frames)))
+train_bbox_count = 0
+test_bbox_count = 0
+for _, bboxes in train_Nreasonable_frames:
+    train_bbox_count += len(bboxes)
+for _, bboxes in test_Nreasonable_frames:
+    test_bbox_count += len(bboxes)
+print train_bbox_count,test_bbox_count
