@@ -1,0 +1,27 @@
+def cut_posv(posv_ori,pos_new):
+    #rint 'posv_ori',posv_ori
+    posv_wh = [posv_ori[2],posv_ori[3]]
+    if posv_ori[1] + posv_ori[3] <= pos_new[1]:
+        posv_wh[1] = 0
+    elif posv_ori[1] < pos_new[1]:
+        posv_wh[1] -= (pos_new[1] - posv_ori[1])
+    elif posv_ori[1] > pos_new[1]:
+        posv_wh[1] -= (posv_ori[1] - pos_new[1])
+        
+    #print "after cut",posv_wh
+    return posv_wh
+
+def upper_visibility_filter(box):
+    if box['occl'] == 0:
+        return True
+    if type(box['posv']) == list:
+        upper_part_pos = [box['pos'][0],box['pos'][1] + box['pos'][3]*0.75,box['pos'][2],box['pos'][3]*0.25]
+        upper_posv_wh = cut_posv(box['posv'],upper_part_pos)
+
+        upper_overlap = (upper_posv_wh[0] * upper_posv_wh[1]) / (upper_part_pos[2] * upper_part_pos[3])
+        upper_visibility = upper_overlap >= 0.5
+
+        return upper_visibility
+    else:
+        return True
+
