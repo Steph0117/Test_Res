@@ -12,3 +12,27 @@ for _, bboxes in train_Nreasonable_frames:
 for _, bboxes in test_Nreasonable_frames:
     test_bbox_count += len(bboxes)
 print train_bbox_count,test_bbox_count
+def reasonable_but_thin_filter(box):
+    AR_ratio = {"min":0, "max": .2}
+    return reasonable_filter(box) and aspect_ration_filter(box, AR_ratio)
+def bordered_but_clear(box, inner_scaler=0.2):
+    
+    x1, y1, width, height = box['pos']
+    
+    
+    inner_x1 = x1 + inner_scaler * width
+    inner_y1 = y1 + inner_scaler * height
+    inner_width = width - 2*inner_scaler 
+    inner_height = height - 2*inner_scaler
+    
+    inner_box = {"pos": [inner_x1, inner_y1, inner_width, inner_height]}
+    
+    
+    return (not boundry_filter(box)) and boundry_filter(inner_box) and person_filter(box)\
+            and height_filter(box) and visibility_filter(box)
+
+
+verify_filter(bordered_but_clear, reasonable_filter)
+def big_people_filter(box, height_min=100):
+    
+    return box["lbl"] == "people" and box["pos"][3] > height_min
